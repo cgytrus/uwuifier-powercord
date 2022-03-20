@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "paths": {
+            "powercord/*": [
+                "../../../fake_node_modules/powercord/*"
+            ]
+        }
+    }
+}
