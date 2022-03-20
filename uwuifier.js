@@ -17,30 +17,23 @@ let simpleReplacements = [
     [ 'ni', 'nyi' ],
     [ 'no', 'nyo' ],
     [ 'nu', 'nyu' ],
-    [ 'te', 'twe' ],
-    [ 'da', 'dwa' ],
-    [ 'ke', 'kwe' ],
-    [ 'qe', 'qwe' ],
-    [ 'je', 'jwe' ],
-    [ 'si', 'swi' ],
-    [ 'so', 'swo' ],
-    [ 'mi', 'mwi' ],
-    [ 'co', 'cwo' ],
-    [ 'mo', 'mwo' ],
-    [ 'ba', 'bwa' ],
     [ 'pow', 'paw' ],
-    [ /(?<!w)ui/g, 'wi' ]
+    [ /(?<!w)ui/g, 'wi' ],
+    [ /(?<!w)ue/g, 'we' ]
 ];
 
 let wordReplacements = {
     'you': 'uwu',
     'no': 'nu',
     'oh': 'ow',
-    'too': 'two'
+    'too': 'two',
+    'attempt': 'attwempt',
+    'config': 'cwonfig'
 };
 
 let presuffixes = [
-    '~'
+    '~',
+    '~~'
 ];
 
 let suffixes = [
@@ -51,25 +44,61 @@ let suffixes = [
     '<{^v^}>',
     '^-^',
     'x3',
-    'x3',
-    'rawr',
-    'rawr x3',
-    'owo',
-    'uwu',
+    [
+        'rawr',
+        'rawr~',
+        'rawr~~',
+        'rawr x3',
+        'rawr~ x3',
+        'rawr~~ x3'
+    ],
+    [
+        'owo',
+        'owo~',
+        'owo~~'
+    ],
+    [
+        'uwu',
+        'uwu~',
+        'uwu~~'
+    ],
     '-.-',
     '>w<',
     ':3',
     'XD',
-    'nya',
-    'nya~',
-    'nya~~',
-    'nyaa~',
-    'nyaa~~',
-    '>_<',
+    [
+        [
+            'nya',
+            'nya~',
+            'nya~~'
+        ],
+        [
+            'nyaa',
+            'nyaa~',
+            'nyaa~~'
+        ]
+    ],
+    [
+        '>_<',
+        '>-<'
+    ],
     ':flushed:',
-    '^^',
-    '^^;;'
+    '👉👈',
+    [
+        '^^',
+        '^^;;'
+    ],
+    [
+        'w',
+        'ww'
+    ]
 ];
+
+function chooseSuffixVariation(list) {
+    let option = list[Math.floor(Math.random() * list.length)];
+    if(Array.isArray(option)) return chooseSuffixVariation(option);
+    return option;
+}
 
 let replacements = [
     // lowercase
@@ -121,9 +150,9 @@ let replacements = [
             let presuffix = '';
             let suffix = '';
             if(getChance(settings.presuffixChance))
-                presuffix = presuffixes[Math.floor(Math.random() * presuffixes.length)];
+                presuffix = chooseSuffixVariation(presuffixes);
             if(getChance(settings.suffixChance))
-                suffix = ` ${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
+                suffix = ` ${chooseSuffixVariation(suffixes)}`;
             let finalSuffix = `${presuffix}${suffix}`;
             if(escape) finalSuffix = escapeString(finalSuffix);
             return finalSuffix;
