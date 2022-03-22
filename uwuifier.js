@@ -2,7 +2,9 @@ let settings = {
     periodToExclamationChance: 0.2,
     stutterChance: 0.1,
     presuffixChance: 0.1,
-    suffixChance: 0.2
+    suffixChance: 0.2,
+    duplicateCommasChance: 0.4,
+    duplicateCommasAmount: 4
 };
 
 function getChance(chance) { return Math.random() < chance; }
@@ -37,7 +39,8 @@ let wordReplacements = {
 
 let presuffixes = [
     '~',
-    '~~'
+    '~~',
+    ','
 ];
 
 let suffixes = [
@@ -95,7 +98,8 @@ let suffixes = [
     [
         'w',
         'ww'
-    ]
+    ],
+    ','
 ];
 
 function chooseSuffixVariation(list) {
@@ -115,6 +119,18 @@ let replacements = [
             return '!';
         }
     ],
+    // duplicate commas
+    [
+        ',', (_escape, isIgnoredAt) => function(match, offset, string) {
+            if(isIgnoredAt(offset, string)) return match;
+            if(getChance(settings.duplicateCommasChance)) {
+                let amount = Math.floor((Math.random() + 1) * (settings.duplicateCommasAmount - 1));
+                for(let i = 0; i < amount; i++)
+                    match += ',';
+            }
+            return match;
+        }
+    ],
     // simple and word replacements
     [
         // match a word
@@ -126,7 +142,8 @@ let replacements = [
                 match = wordReplacements[match];
             for(const [ pattern, replacement ] of simpleReplacements) {
                 // don't replace whole words
-                if((pattern instanceof RegExp) && match.match(pattern)?.includes(match) || pattern == match) continue;
+                if((pattern instanceof RegExp) && match.match(pattern)?.includes(match) || pattern == match)
+                    continue;
                 match = match.replaceAll(pattern, replacement);
             }
             return caps ? match.toUpperCase() : match;
@@ -164,9 +181,8 @@ module.exports = {
     uwuify: function(string, escape = false, isIgnoredAt = () => false) {
         if(string == null || !/\S/.test(string)) return string;
 
-        for(const [ pattern, replacement ] of replacements) {
+        for(const [ pattern, replacement ] of replacements)
             string = string.replaceAll(pattern, replacement(escape, isIgnoredAt));
-        }
         return string;
     }
 }

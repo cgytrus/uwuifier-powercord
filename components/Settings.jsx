@@ -53,6 +53,12 @@ module.exports = class Settings extends React.PureComponent {
                 >
                     {this.uwuifyIfEnabled(this.props.getSetting, 'Suffix chance')}
                 </SliderInput>
+                <SliderInput
+                    onValueChange={val => this.settingChanged(this.props.updateSetting, 'duplicateCommasChance', val / 100.0)}
+                    initialValue={uwuifier.settings.duplicateCommasChance * 100.0}
+                >
+                    {this.uwuifyIfEnabled(this.props.getSetting, 'Duplicate commas chance')}
+                </SliderInput>
             </div>
         );
     }

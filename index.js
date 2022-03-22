@@ -19,6 +19,7 @@ module.exports = class Uwuify extends Plugin {
         uwuifier.settings.stutterChance = this.settings.get('stutterChance', uwuifier.settings.stutterChance);
         uwuifier.settings.presuffixChance = this.settings.get('presuffixChance', uwuifier.settings.presuffixChance);
         uwuifier.settings.suffixChance = this.settings.get('suffixChance', uwuifier.settings.suffixChance);
+        uwuifier.settings.duplicateCommasChance = this.settings.get('duplicateCommasChance', uwuifier.settings.duplicateCommasChance);
 
         let ignoreIn = [
             /^<#(?<id>\d{17,19})>$/gd, // channel
@@ -98,6 +99,7 @@ module.exports = class Uwuify extends Plugin {
     pluginWillUnload() {
         powercord.api.settings.unregisterSettings(this.entityID);
         uninject('uwuifier');
+        powercord.api.commands.unregisterCommand('uwu');
     }
 };
 
