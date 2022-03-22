@@ -9,6 +9,8 @@ function getChance(chance) { return Math.random() < chance; }
 
 function escapeString(string) { return string.replaceAll(/(?=[~_<>])/g, '\\'); }
 
+function isCaps(string) { return string == string.toUpperCase(); }
+
 let simpleReplacements = [
     [ 'l', 'w' ],
     [ 'r', 'w' ],
@@ -19,7 +21,9 @@ let simpleReplacements = [
     [ 'nu', 'nyu' ],
     [ 'pow', 'paw' ],
     [ /(?<!w)ui/g, 'wi' ],
-    [ /(?<!w)ue/g, 'we' ]
+    [ /(?<!w)ue/g, 'we' ],
+    [ 'attempt', 'attwempt' ],
+    [ 'config', 'cwonfig' ]
 ];
 
 let wordReplacements = {
@@ -101,13 +105,6 @@ function chooseSuffixVariation(list) {
 }
 
 let replacements = [
-    // lowercase
-    [
-        /./g, (_escape, isIgnoredAt) => function(match, offset, string) {
-            if(isIgnoredAt(offset, string)) return match;
-            return match.toLowerCase();
-        }
-    ],
     // . to !
     [
         // match a . with a space or string end after it
@@ -121,8 +118,10 @@ let replacements = [
     // simple and word replacements
     [
         // match a word
-        /(?<=\b)[a-z\']+(?=\b)/g, (_escape, isIgnoredAt) => function(match, offset, string) {
+        /(?<=\b)[a-zA-Z\']+(?=\b)/g, (_escape, isIgnoredAt) => function(match, offset, string) {
             if(isIgnoredAt(offset, string)) return match;
+            let caps = isCaps(match);
+            match = match.toLowerCase();
             if(match in wordReplacements) // only replace whole words
                 match = wordReplacements[match];
             for(const [ pattern, replacement ] of simpleReplacements) {
@@ -130,13 +129,13 @@ let replacements = [
                 if((pattern instanceof RegExp) && match.match(pattern)?.includes(match) || pattern == match) continue;
                 match = match.replaceAll(pattern, replacement);
             }
-            return match;
+            return caps ? match.toUpperCase() : match;
         }
     ],
     // stutter
     [
         // match beginning of a word
-        /(?<= |^)[a-z]/g, (_escape, isIgnoredAt) => function(match, offset, string) {
+        /(?<= |^)[a-zA-Z]/g, (_escape, isIgnoredAt) => function(match, offset, string) {
             if(isIgnoredAt(offset, string)) return match;
             if(!getChance(settings.stutterChance))
                 return match;
@@ -165,10 +164,9 @@ module.exports = {
     uwuify: function(string, escape = false, isIgnoredAt = () => false) {
         if(string == null || !/\S/.test(string)) return string;
 
-        newString = string;
         for(const [ pattern, replacement ] of replacements) {
-            newString = newString.replaceAll(pattern, replacement(escape, isIgnoredAt));
+            string = string.replaceAll(pattern, replacement(escape, isIgnoredAt));
         }
-        return newString;
+        return string;
     }
 }
