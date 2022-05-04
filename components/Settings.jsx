@@ -15,6 +15,7 @@ module.exports = class Settings extends React.PureComponent {
     settingChanged(updateSetting, setting, value) {
         updateSetting(setting, value);
         uwuifier.settings[setting] = value;
+        console.log(setting, value)
     }
 
     render() {
@@ -28,36 +29,50 @@ module.exports = class Settings extends React.PureComponent {
                 </SwitchItem>
                 <SliderInput
                     note={this.uwuifyIfEnabled(this.props.getSetting, 'Chance of a period being replaced with an exclamation mark')}
-                    onValueChange={val => this.settingChanged(this.props.updateSetting, 'periodToExclamationChance', val / 100.0)}
-                    initialValue={uwuifier.settings.periodToExclamationChance * 100.0}
+                    onValueChange={val => this.settingChanged(this.props.updateSetting, 'periodToExclamationChance', Math.round(val * 100.0) / 100.0)}
+                    initialValue={uwuifier.settings.periodToExclamationChance}
+                    maxValue={1.0}
                 >
                     {this.uwuifyIfEnabled(this.props.getSetting, 'Period to exclamation chance')}
                 </SliderInput>
                 <SliderInput
-                    onValueChange={val => this.settingChanged(this.props.updateSetting, 'stutterChance', val / 100.0)}
-                    initialValue={uwuifier.settings.stutterChance * 100.0}
+                    onValueChange={val => this.settingChanged(this.props.updateSetting, 'stutterChance', Math.round(val * 100.0) / 100.0)}
+                    initialValue={uwuifier.settings.stutterChance}
+                    maxValue={1.0}
                 >
                     {this.uwuifyIfEnabled(this.props.getSetting, 'Stutter chance')}
                 </SliderInput>
                 <SliderInput
-                    note={this.uwuifyIfEnabled(this.props.getSetting, 'Chance of a tilde (~) appearing at the end of your message')}
-                    onValueChange={val => this.settingChanged(this.props.updateSetting, 'presuffixChance', val / 100.0)}
-                    initialValue={uwuifier.settings.presuffixChance * 100.0}
+                    note={this.uwuifyIfEnabled(this.props.getSetting, 'Chance of a pre-suffix (\'~\' and \'!\') appearing at the end of your message')}
+                    onValueChange={val => this.settingChanged(this.props.updateSetting, 'presuffixChance', Math.round(val * 100.0) / 100.0)}
+                    initialValue={uwuifier.settings.presuffixChance}
+                    maxValue={1.0}
                 >
                     {this.uwuifyIfEnabled(this.props.getSetting, 'Presuffix chance')}
                 </SliderInput>
                 <SliderInput
                     note={this.uwuifyIfEnabled(this.props.getSetting, 'Chance of a suffix ("nya~", "^^;;" etc.) appearing at the end of your message')}
-                    onValueChange={val => this.settingChanged(this.props.updateSetting, 'suffixChance', val / 100.0)}
-                    initialValue={uwuifier.settings.suffixChance * 100.0}
+                    onValueChange={val => this.settingChanged(this.props.updateSetting, 'suffixChance', Math.round(val * 100.0) / 100.0)}
+                    initialValue={uwuifier.settings.suffixChance}
+                    maxValue={1.0}
                 >
                     {this.uwuifyIfEnabled(this.props.getSetting, 'Suffix chance')}
                 </SliderInput>
                 <SliderInput
-                    onValueChange={val => this.settingChanged(this.props.updateSetting, 'duplicateCommasChance', val / 100.0)}
-                    initialValue={uwuifier.settings.duplicateCommasChance * 100.0}
+                    note={this.uwuifyIfEnabled(this.props.getSetting, 'Chance of a specific character (\',\' and \'!\') getting duplicated')}
+                    onValueChange={val => this.settingChanged(this.props.updateSetting, 'duplicateCharactersChance', Math.round(val * 100.0) / 100.0)}
+                    initialValue={uwuifier.settings.duplicateCharactersChance}
+                    maxValue={1.0}
                 >
-                    {this.uwuifyIfEnabled(this.props.getSetting, 'Duplicate commas chance')}
+                    {this.uwuifyIfEnabled(this.props.getSetting, 'Duplicate characters chance')}
+                </SliderInput>
+                <SliderInput
+                    onValueChange={val => this.settingChanged(this.props.updateSetting, 'duplicateCharactersAmount', val)}
+                    initialValue={uwuifier.settings.duplicateCharactersAmount}
+                    markers={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}
+                    stickToMarkers={true}
+                >
+                    {this.uwuifyIfEnabled(this.props.getSetting, 'Duplicate characters amount')}
                 </SliderInput>
             </div>
         );

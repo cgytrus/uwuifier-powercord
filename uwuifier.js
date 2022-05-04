@@ -2,9 +2,9 @@ let settings = {
     periodToExclamationChance: 0.2,
     stutterChance: 0.1,
     presuffixChance: 0.1,
-    suffixChance: 0.2,
-    duplicateCommasChance: 0.4,
-    duplicateCommasAmount: 4
+    suffixChance: 0.3,
+    duplicateCharactersChance: 0.4,
+    duplicateCharactersAmount: 3
 };
 
 function getChance(chance) { return Math.random() < chance; }
@@ -45,7 +45,10 @@ let presuffixes = [
 
 let suffixes = [
     ':D',
-    'xD',
+    [
+        'xD',
+        'XD',
+    ],
     ':P',
     ';3',
     '<{^v^}>',
@@ -72,18 +75,13 @@ let suffixes = [
     '-.-',
     '>w<',
     ':3',
-    'XD',
     [
-        [
-            'nya',
-            'nya~',
-            'nya~~'
-        ],
-        [
-            'nyaa',
-            'nyaa~',
-            'nyaa~~'
-        ]
+        'nya',
+        'nya~',
+        'nya~~',
+        'nyaa',
+        'nyaa~',
+        'nyaa~~'
     ],
     [
         '>_<',
@@ -119,14 +117,16 @@ let replacements = [
             return '!';
         }
     ],
-    // duplicate commas
+    // duplicate characters
     [
-        ',', (_escape, isIgnoredAt) => function(match, offset, string) {
+        /[,!]/g, (_escape, isIgnoredAt) => function(match, offset, string) {
             if(isIgnoredAt(offset, string)) return match;
-            if(getChance(settings.duplicateCommasChance)) {
-                let amount = Math.floor((Math.random() + 1) * (settings.duplicateCommasAmount - 1));
+            if(getChance(settings.duplicateCharactersChance)) {
+                let amount = Math.floor((Math.random() + 1) * (settings.duplicateCharactersAmount - 1));
+                let newMatch = match;
                 for(let i = 0; i < amount; i++)
-                    match += ',';
+                    newMatch += match;
+                match = newMatch;
             }
             return match;
         }

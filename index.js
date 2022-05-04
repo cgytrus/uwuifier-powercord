@@ -19,7 +19,8 @@ module.exports = class Uwuify extends Plugin {
         uwuifier.settings.stutterChance = this.settings.get('stutterChance', uwuifier.settings.stutterChance);
         uwuifier.settings.presuffixChance = this.settings.get('presuffixChance', uwuifier.settings.presuffixChance);
         uwuifier.settings.suffixChance = this.settings.get('suffixChance', uwuifier.settings.suffixChance);
-        uwuifier.settings.duplicateCommasChance = this.settings.get('duplicateCommasChance', uwuifier.settings.duplicateCommasChance);
+        uwuifier.settings.duplicateCharactersChance = this.settings.get('duplicateCharactersChance', uwuifier.settings.duplicateCharactersChance);
+        uwuifier.settings.duplicateCharactersAmount = this.settings.get('duplicateCharactersAmount', uwuifier.settings.duplicateCharactersAmount);
 
         let ignoreIn = [
             /^<#(?<id>\d{17,19})>$/gd, // channel
@@ -77,9 +78,10 @@ module.exports = class Uwuify extends Plugin {
         const CTAC = getModule(m => m.default?.type?.render?.displayName == 'ChannelTextAreaContainer', false).default;
         inject('uwuifier', CTAC.type, 'render', (_, res) => {
             const editor = findInReactTree(res, x => x.props?.promptToUpload && x.props.onSubmit);
-            editor.props.onSubmit = (original => function(...args) {
-                if(settings.get('enabled', true)) args[0] = uwuifyMessage(args[0], true);
-                return original(...args);
+            if(editor == null) return res;
+            editor.props.onSubmit = (original => function(o, a, u, s) {
+                if(settings.get('enabled', true)) o = uwuifyMessage(o, true);
+                return original(o, a, u, s);
             })(editor.props.onSubmit);
             return res;
         });
