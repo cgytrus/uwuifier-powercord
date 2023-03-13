@@ -1,3 +1,5 @@
+# **moved to [cgytrus/uwuifier-replugged](https://github.com/cgytrus/uwuifier-replugged)**
+
 # uwuifiew-pawewcwowd
 a powercord plugin that makes your messages very uwu
 
